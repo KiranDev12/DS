@@ -30,7 +30,7 @@ int binarySearch(int arr[], int size, int element){
 }
 
 int main(){
-    int arr[] = {11, 16, 17, 18, 19, 3, 7, 9, 14};
+    int arr[] = {11, 16, 17, 18, 19, 3, 7, 14, 9};
     int size = sizeof(arr)/sizeof(int);
     int element = 14;
     int searchIndex = linearSearch(arr, size, element);
