@@ -32,7 +32,6 @@ void deleteArray(int* arr, int n, int pos){
 	for(i=pos-1; i<n-1; i++){
 		*(arr+i) = *(arr+i+1);
 	}
-	n--;
 }
 
 int main(){
