@@ -1,3 +1,15 @@
+
+/*
+? Define a structure called Student with the members: name, reg_no, marks in 3 
+? tests and average_ marks.
+? Develop a menu driven program to perform the following by writing separate 
+? function for each operation: a) read information of N students b) display student’s 
+? information c) to calculate the average of best two test marks of each student.
+? Note: Illustrate the use of pointer to an array of structure and allocate memory 
+? dynamically using malloc () /calloc()/realloc()
+*/ 
+
+
 #include<stdio.h>
 #include<stdlib.h>
 
@@ -18,7 +30,7 @@ void read(struct student *ptr){
 		ptr = (struct student *)realloc(ptr, n * sizeof(struct student));
 	}
 	for(int i = 0; i<n ; i++){
-		printf("Enter Reg.No., Name of Student (%d)", i+1);
+		printf("Enter Reg.No., Name of Student (%d)\n", i+1);
 		scanf("%d", &(ptr+i)->roll);
 		scanf("%s", (ptr+i)->name);
 		printf("Enter marks of 3 tests: \n");
@@ -31,7 +43,7 @@ void read(struct student *ptr){
 void display(struct student *ptr){
 	for(int i = 0; i<n ; i++){
 		printf("Details of %d student\n", i+1);
-		printf("Name: %d\n", (ptr+i)->roll);
+		printf("Roll: %d\n", (ptr+i)->roll);
 		printf("Name: %s\n", (ptr+i)->name);
 		for(int j = 0; j<3; j++){
 			printf("%d\t", (ptr+i)->marks[j]);
@@ -51,7 +63,7 @@ void average(struct student *ptr){
 		else{
 			(ptr+i)->avg = ((ptr+i)->marks[0]+(ptr+i)->marks[1])/2.0;
 		}
-		printf("%f\n", (ptr+i)->avg);
+		printf("Student with name %s has average marks: %f\n", (ptr+i)->name,(ptr+i)->avg);
 	}
 }
 
