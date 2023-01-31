@@ -22,7 +22,9 @@ typedef struct Time
 	int minute;
 	int second;
 }time;
+
 time *p;
+
 time *read(time *p)
 {
 	p=(time *)(calloc(1, sizeof(time)));
@@ -88,6 +90,7 @@ void timeAdd(time one, time two)
 	add.hour=one.hour+two.hour;
 	if(add.second>59)
 	{
+		//! Remember this combination 
 		add.minute+=((add.second)/60);
 		add.second=(add.second%60);
 	}

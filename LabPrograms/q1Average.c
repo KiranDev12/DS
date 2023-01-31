@@ -7,9 +7,7 @@
 ? information c) to calculate the average of best two test marks of each student.
 ? Note: Illustrate the use of pointer to an array of structure and allocate memory 
 ? dynamically using malloc () /calloc()/realloc()
-*/ 
-
-
+*/
 #include<stdio.h>
 #include<stdlib.h>
 
