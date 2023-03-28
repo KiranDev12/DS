@@ -3,100 +3,88 @@
 #include <ctype.h>
 #include <string.h>
 
-#define MAX_EXPR_SIZE 100
+#define MAX_EXPR_LEN 100
 
-char stack[MAX_EXPR_SIZE];
-int top = -1;
+typedef struct {
+    char data[MAX_EXPR_LEN];
+    int top;
+} Stack;
 
-void push(char c) {
-    if (top == MAX_EXPR_SIZE - 1) {
-        printf("Stack overflow\n");
-        exit(1);
-    }
-    stack[++top] = c;
+void init(Stack *s) {
+    s->top = -1;
 }
 
-char pop() {
-    if (top == -1) {
-        printf("Stack underflow\n");
-        exit(1);
+void push(Stack *s, char ch) {
+    if (s->top == MAX_EXPR_LEN - 1) {
+        printf("Error: Stack overflow\n");
+        exit(EXIT_FAILURE);
     }
-    return stack[top--];
+    s->data[++(s->top)] = ch;
 }
 
-int precedence(char operator) {
-    switch (operator) {
+char pop(Stack *s) {
+    if (s->top == -1) {
+        printf("Error: Stack underflow\n");
+        exit(EXIT_FAILURE);
+    }
+    return s->data[(s->top)--];
+}
+
+int is_operator(char ch) {
+    return (ch == '+' || ch == '-' || ch == '*' || ch == '/');
+}
+
+int precedence(char ch) {
+    switch (ch) {
         case '+':
         case '-':
             return 1;
         case '*':
         case '/':
             return 2;
-        case '^':
-            return 3;
         default:
-            return -1;
+            return 0;
     }
 }
 
-void infix_to_postfix(char* infix, char* postfix) {
-    int i, j;
-    char c;
-    for (i = 0, j = 0; infix[i] != '\0'; i++) {
-        if (isdigit(infix[i]) || isalpha(infix[i])) {
-            postfix[j++] = infix[i];
-        } else if (infix[i] == '(') {
-            push(infix[i]);
-        } else if (infix[i] == ')') {
-            while (top != -1 && stack[top] != '(') {
-                postfix[j++] = pop();
+void infix_to_postfix(char infix_expr[MAX_EXPR_LEN], char postfix_expr[MAX_EXPR_LEN]) {
+    Stack s;
+    init(&s);
+    int i = 0, j = 0;
+    while (infix_expr[i] != '\0') {
+        char ch = infix_expr[i];
+        if (isdigit(ch) || isalpha(ch)) {
+            postfix_expr[j++] = ch;
+        } else if (ch == '(') {
+            push(&s, ch);
+        } else if (ch == ')') {
+            while (s.data[s.top] != '(') {
+                postfix_expr[j++] = pop(&s);
             }
-            if (top == -1) {
-                printf("Unbalanced expression\n");
-                exit(1);
+            pop(&s);  // pop the '('
+        } else if (is_operator(ch)) {
+            while (s.top != -1 && s.data[s.top] != '(' &&
+                   precedence(ch) <= precedence(s.data[s.top])) {
+                postfix_expr[j++] = pop(&s);
             }
-            c = pop(); // remove '(' from stack
+            push(&s, ch);
         } else {
-            while (top != -1 && precedence(stack[top]) >= precedence(infix[i])) {
-                postfix[j++] = pop();
-            }
-            push(infix[i]);
+            printf("Error: Invalid character %c in infix expression\n", ch);
+            exit(EXIT_FAILURE);
         }
+        i++;
     }
-    while (top != -1) {
-        if (stack[top] == '(') {
-            printf("Unbalanced expression\n");
-            exit(1);
-        }
-        postfix[j++] = pop();
+    while (s.top != -1) {
+        postfix_expr[j++] = pop(&s);
     }
-    postfix[j] = '\0';
+    postfix_expr[j] = '\0';
 }
 
 int main() {
-    char infix[MAX_EXPR_SIZE], postfix[MAX_EXPR_SIZE];
-    int choice;
-
-    do {
-        printf("\n1. Convert infix expression to postfix");
-        printf("\n2. Exit");
-        printf("\nEnter your choice: ");
-        scanf("%d", &choice);
-        switch (choice) {
-            case 1:
-                printf("\nEnter infix expression: ");
-                scanf("%s", infix);
-                infix_to_postfix(infix, postfix);
-                printf("\nPostfix expression: %s\n", postfix);
-                break;
-            case 2:
-                printf("\nExiting program...\n");
-                break;
-            default:
-                printf("\nInvalid choice. Please try again.\n");
-                break;
-        }
-    } while (choice != 2);
-
+    char infix_expr[MAX_EXPR_LEN], postfix_expr[MAX_EXPR_LEN];
+    printf("Enter infix expression: ");
+    scanf("%s", infix_expr);
+    infix_to_postfix(infix_expr, postfix_expr);
+    printf("Postfix expression: %s\n", postfix_expr);
     return 0;
 }
